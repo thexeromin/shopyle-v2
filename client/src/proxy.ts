@@ -8,5 +8,10 @@ export default withAuth({
 
 // Specify exactly which routes require the user to be logged in
 export const config = {
-  matcher: ['/dashboard/:path*', '/checkout/:path*', '/profile/:path*'],
+  matcher: [
+    '/dashboard/:path*',
+    '/products/:path*',
+    '/checkout/:path*',
+    '/profile/:path*',
+  ],
 }

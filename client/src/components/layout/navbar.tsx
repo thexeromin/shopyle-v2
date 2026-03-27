@@ -1,12 +1,15 @@
 import Link from 'next/link'
 import { ShoppingBag } from 'lucide-react'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 import { Button } from '@/components/ui/button'
-
-import { MobileMenu } from './'
+import { MobileMenu, SignOutButton } from './'
 import ThemeToggle from '../theme-toggle'
 
-export default function Navbar() {
+export default async function Navbar() {
+  const session = await getServerSession(authOptions)
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto px-4 flex h-16 items-center justify-between">
@@ -26,13 +29,13 @@ export default function Navbar() {
             Products
           </Link>
           <Link
-            href="/categories"
+            href="/#"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
           >
             Categories
           </Link>
           <Link
-            href="/deals"
+            href="/#"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
           >
             Deals
@@ -42,12 +45,23 @@ export default function Navbar() {
         <div className="flex items-center gap-2 md:gap-4">
           <ThemeToggle />
           <div className="hidden md:flex items-center gap-2">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Log in</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/signup">Sign up</Link>
-            </Button>
+            {session ? (
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Hi, {session.user?.name || 'User'}
+                </span>
+                <SignOutButton />
+              </div>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link href="/login">Log in</Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/signup">Sign up</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

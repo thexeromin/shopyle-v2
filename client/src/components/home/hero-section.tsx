@@ -31,7 +31,7 @@ export default function HeroSection() {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="h-12 px-8">
-                <Link href="/categories">Explore Collections</Link>
+                <Link href="/#">Explore Collections</Link>
               </Button>
             </div>
           </div>

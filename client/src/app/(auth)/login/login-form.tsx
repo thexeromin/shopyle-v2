@@ -51,8 +51,8 @@ export function LoginForm() {
       return
     }
 
-    // Success! Redirect to dashboard
-    router.push('/dashboard')
+    // Success! Redirect to products
+    router.push('/products')
     router.refresh()
   }
 
