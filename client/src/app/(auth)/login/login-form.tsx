@@ -4,6 +4,7 @@ import * as React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
+import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { Loader2 } from 'lucide-react'
 
@@ -21,6 +22,7 @@ export function LoginForm() {
   const router = useRouter()
   // const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  const [authError, setAuthError] = React.useState<string>('')
 
   // const registered = searchParams.get('registered')
 
@@ -34,10 +36,24 @@ export function LoginForm() {
 
   async function onSubmit(data: LoginInput) {
     setIsLoading(true)
-    console.log(data)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    setAuthError('')
+
+    const result = await signIn('credentials', {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    })
+
     setIsLoading(false)
-    router.push('/')
+
+    if (result?.error) {
+      setAuthError(result.error)
+      return
+    }
+
+    // Success! Redirect to dashboard
+    router.push('/dashboard')
+    router.refresh()
   }
 
   const { errors } = form.formState
@@ -51,11 +67,12 @@ export function LoginForm() {
         </p>
       </div>
 
-      {/* {registered && (
-        <div className="rounded-md bg-green-50/50 p-3 text-sm text-green-600 dark:bg-green-900/10 dark:text-green-400 border border-green-200 dark:border-green-900/50">
-          Account created successfully! Please log in.
+      {/* Display auth errors (e.g., "Incorrect password") */}
+      {authError && (
+        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive border border-destructive/20">
+          {authError}
         </div>
-      )} */}
+      )}
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <FieldGroup className="space-y-5">
