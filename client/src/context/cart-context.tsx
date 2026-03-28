@@ -8,14 +8,7 @@ import {
   useState,
   ReactNode,
 } from 'react'
-
-export interface CartItem {
-  _id: string
-  name: string
-  description: string
-  price: number
-  quantity: number
-}
+import type { CartItem } from '@/types/cart'
 
 interface CartContextType {
   cart: CartItem[]
@@ -60,7 +53,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             : item
         )
       }
-      return [...prev, { ...product, quantity: 1 }]
+      return [...prev, { ...product, image: product.photo, quantity: 1 }]
     })
   }
 
