@@ -81,14 +81,16 @@ export const updateProduct = (req: AuthRequest, res: Response) => {
 //product listing
 
 export const getAllProducts = (req: AuthRequest, res: Response) => {
-  Product.find().exec((err, products) => {
-    if (err) {
-      return res.status(400).json({
-        error: 'NO product FOUND',
-      })
-    }
-    res.json(products)
-  })
+  Product.find()
+    .populate('category', '_id name')
+    .exec((err, products) => {
+      if (err) {
+        return res.status(400).json({
+          error: 'NO product FOUND',
+        })
+      }
+      res.json(products)
+    })
 }
 
 export const getAllUniqueCategories = (req: Request, res: Response) => {
