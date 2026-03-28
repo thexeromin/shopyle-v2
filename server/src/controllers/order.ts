@@ -80,5 +80,6 @@ export const stripeCheckout = async (
   next: NextFunction
 ) => {
   // TODO: integrate stripe
+  req.body.transaction_id = 'txn_1234'
   next()
 }

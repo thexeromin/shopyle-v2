@@ -111,10 +111,10 @@ export const updateStock = async (
 ) => {
   try {
     const myOperations = req.body.products.map(
-      (prod: { _id: string; count: number }) => ({
+      (prod: { _id: string; quantity: number }) => ({
         updateOne: {
           filter: { _id: prod._id },
-          update: { $inc: { stock: -prod.count, sold: +prod.count } },
+          update: { $inc: { stock: -prod.quantity, sold: +prod.quantity } },
         },
       })
     )
@@ -122,6 +122,7 @@ export const updateStock = async (
     await Product.bulkWrite(myOperations)
     next()
   } catch (err) {
+    console.log(err)
     return res.status(400).json({ error: 'Bulk operation failed' })
   }
 }
