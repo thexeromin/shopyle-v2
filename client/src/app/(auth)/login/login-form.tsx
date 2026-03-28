@@ -124,6 +124,33 @@ export function LoginForm() {
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Log in
         </Button>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            className="h-11 text-sm font-medium border-dashed"
+            onClick={() => {
+              form.setValue('email', 'bob@example.com')
+              form.setValue('password', 'hashed_password_here')
+              form.handleSubmit(onSubmit)()
+            }}
+          >
+            Login as User
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="h-11 text-sm font-medium border-dashed"
+            onClick={() => {
+              form.setValue('email', 'alice@example.com')
+              form.setValue('password', 'hashed_password_here')
+              form.handleSubmit(onSubmit)()
+            }}
+          >
+            Login as Admin
+          </Button>
+        </div>
       </form>
 
       <p className="text-center text-sm text-muted-foreground">
