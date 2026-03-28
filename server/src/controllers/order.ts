@@ -79,21 +79,6 @@ export const stripeCheckout = async (
   res: Response,
   next: NextFunction
 ) => {
-  let { amount, transaction_id: id } = req.body
-
-  try {
-    const payment = await stripe.paymentIntents.create({
-      amount: parseFloat(amount) * 100,
-      currency: 'USD',
-      description: 'Shopyle order',
-      payment_method: id,
-      confirm: true,
-    })
-    next()
-  } catch (error) {
-    res.json({
-      message: 'Payment Failed',
-      success: false,
-    })
-  }
+  // TODO: integrate stripe
+  next()
 }

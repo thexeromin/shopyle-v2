@@ -33,6 +33,5 @@ export interface UserPurchase {
   category: string
   quantity: string | number
   price: string | number
-  transaction_id: string
   count?: number
 }

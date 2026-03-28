@@ -78,7 +78,6 @@ export const pushOrderInPurchaseList = (
       category: product.category,
       quantity: product?.count || 1,
       price: product.price,
-      transaction_id: req.body.transaction_id,
     })
   })
 

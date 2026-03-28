@@ -104,28 +104,24 @@ export const getAllUniqueCategories = (req: Request, res: Response) => {
   })
 }
 
-export const updateStock = (
+export const updateStock = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  // TODO: need fix
-  // let myOperations = req.body.products.map(
-  //   (prod: { _id: string; count: number }) => {
-  //     return {
-  //       updateOne: {
-  //         filter: { _id: prod._id },
-  //         update: { $inc: { stock: -prod.count, sold: +prod.count } },
-  //       },
-  //     }
-  //   }
-  // )
-  // Product.bulkWrite(myOperations, {}, (err, products) => {
-  //   if (err) {
-  //     return res.status(400).json({
-  //       error: 'Bulk operation failed',
-  //     })
-  //   }
-  //   next()
-  // })
+  try {
+    const myOperations = req.body.products.map(
+      (prod: { _id: string; count: number }) => ({
+        updateOne: {
+          filter: { _id: prod._id },
+          update: { $inc: { stock: -prod.count, sold: +prod.count } },
+        },
+      })
+    )
+
+    await Product.bulkWrite(myOperations)
+    next()
+  } catch (err) {
+    return res.status(400).json({ error: 'Bulk operation failed' })
+  }
 }
