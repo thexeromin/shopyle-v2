@@ -1,16 +1,8 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import bcrypt from 'bcryptjs'
 import { loginSchema } from '@/lib/validations/auth'
 
 export const authOptions: NextAuthOptions = {
-  // Credentials provider requires JWT strategy
-  session: {
-    strategy: 'jwt',
-  },
-  pages: {
-    signIn: '/login', // Redirects here when authentication is required
-  },
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -26,53 +18,64 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Invalid input data')
         }
 
-        const { email, password } = parsedCredentials.data
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API}/api/signin`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(parsedCredentials.data),
+            }
+          )
 
-        // TODO: Replace this with your actual database call
-        // const user = await db.user.findUnique({ where: { email } })
+          const data = await response.json()
 
-        // Mock user for demonstration
-        const user = {
-          id: '1',
-          name: 'Abhijit',
-          email: 'test@example.com',
-          // This is "password123" hashed
-          password: await bcrypt.hash('password123', 10),
-        }
+          if (!response.ok) {
+            throw new Error(data.error || data.message || 'Invalid credentials')
+          }
 
-        if (!user) {
-          throw new Error('No user found with this email')
-        }
-
-        const passwordsMatch = await bcrypt.compare(password, user.password)
-
-        if (!passwordsMatch) {
-          throw new Error('Incorrect password')
-        }
-
-        // Any object returned here is saved in the JWT token
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
+          return {
+            id: data.user._id,
+            name: data.user.name,
+            email: data.user.email,
+            role: data.user.role,
+            accessToken: data.token,
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            throw new Error(error.message)
+          }
+          throw new Error('Internal server error during login')
         }
       },
     }),
   ],
   callbacks: {
-    // Attach the user ID to the JWT token
+    // This runs first. Takes the user object returned from `authorize`
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
+        token.role = user.role
+        token.accessToken = user.accessToken
       }
       return token
     },
-    // Pass the user ID from the token to the client session
+    // This session callback runs whenever we call useSession() or getServerSession()
+    // It takes the data out of the JWT and passes it to the frontend
     async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string
+      if (session.user) {
+        session.user.id = token.id
+        session.user.role = token.role
       }
+      session.accessToken = token.accessToken
+
       return session
     },
+  },
+  session: {
+    strategy: 'jwt',
+  },
+  pages: {
+    signIn: '/login', // Redirects here when authentication is required
   },
 }
