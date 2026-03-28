@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { useForm } from 'react-hook-form'
 import { Loader2 } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,10 +18,10 @@ import {
   FieldGroup,
 } from '@/components/ui/field'
 import { signupSchema, type SignupInput } from '@/lib/validations/auth'
+import { authService } from '@/lib/api/authService'
 
 export function SignupForm() {
   const router = useRouter()
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
   const form = useForm<SignupInput>({
     resolver: standardSchemaResolver(signupSchema),
@@ -29,13 +31,23 @@ export function SignupForm() {
       password: '',
     },
   })
+  const { mutate: signup, isPending } = useMutation({
+    mutationFn: authService.signup,
+    onSuccess: () => {
+      toast.success('Account created successfully!', {
+        description: 'Welcome to Shopyle. Please log in to continue.',
+      })
+      router.push('/login')
+    },
+    onError: (error: Error) => {
+      toast.error('Signup Failed', {
+        description: error.message,
+      })
+    },
+  })
 
   async function onSubmit(data: SignupInput) {
-    setIsLoading(true)
-    console.log(data)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsLoading(false)
-    router.push('/login?registered=true')
+    signup(data)
   }
 
   const { errors } = form.formState
@@ -101,10 +113,10 @@ export function SignupForm() {
         <Button
           className="w-full h-11 text-base font-medium mt-2"
           type="submit"
-          disabled={isLoading}
+          disabled={isPending}
         >
-          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Sign up
+          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isPending ? 'Signing up...' : 'Sign Up'}
         </Button>
       </form>
 
