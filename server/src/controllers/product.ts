@@ -107,23 +107,23 @@ export const updateStock = (
   res: Response,
   next: NextFunction
 ) => {
-  let myOperations = req.body.products.map(
-    (prod: { _id: string; count: number }) => {
-      return {
-        updateOne: {
-          filter: { _id: prod._id },
-          update: { $inc: { stock: -prod.count, sold: +prod.count } },
-        },
-      }
-    }
-  )
-
-  Product.bulkWrite(myOperations, {}, (err, products) => {
-    if (err) {
-      return res.status(400).json({
-        error: 'Bulk operation failed',
-      })
-    }
-    next()
-  })
+  // TODO: need fix
+  // let myOperations = req.body.products.map(
+  //   (prod: { _id: string; count: number }) => {
+  //     return {
+  //       updateOne: {
+  //         filter: { _id: prod._id },
+  //         update: { $inc: { stock: -prod.count, sold: +prod.count } },
+  //       },
+  //     }
+  //   }
+  // )
+  // Product.bulkWrite(myOperations, {}, (err, products) => {
+  //   if (err) {
+  //     return res.status(400).json({
+  //       error: 'Bulk operation failed',
+  //     })
+  //   }
+  //   next()
+  // })
 }
