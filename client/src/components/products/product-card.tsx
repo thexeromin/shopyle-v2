@@ -1,8 +1,7 @@
 import Image from 'next/image'
-import { ShoppingBag } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import AddToCart from './add-to-cart'
 import type { Product } from '@/types/product'
 
 export function ProductCard({ product }: { product: Product }) {
@@ -39,13 +38,10 @@ export function ProductCard({ product }: { product: Product }) {
           </p>
         </div>
 
-        <Button
+        <AddToCart
           className="mt-auto w-full transition-transform active:scale-95"
-          variant="secondary"
-        >
-          <ShoppingBag className="mr-2 h-4 w-4" />
-          Add to Cart
-        </Button>
+          product={product}
+        />
       </CardFooter>
     </Card>
   )

@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
 import { Button } from '@/components/ui/button'
+import CartIcon from '@/components/ui/cart-icon'
 import { MobileMenu, SignOutButton } from './'
 import ThemeToggle from '../theme-toggle'
 
@@ -44,6 +45,7 @@ export default async function Navbar() {
 
         <div className="flex items-center gap-2 md:gap-4">
           <ThemeToggle />
+          <CartIcon />
           <div className="hidden md:flex items-center gap-2">
             {session ? (
               <div className="flex items-center gap-4">

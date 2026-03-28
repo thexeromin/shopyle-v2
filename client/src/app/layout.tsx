@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Inter } from 'next/font/google'
 import './globals.css'
 import { cn } from '@/lib/utils'
+import { CartProvider } from '@/context'
 import { QueryProvider, ThemeProvider } from '@/providers'
 import { Toaster } from '@/components/ui/sonner'
 
@@ -48,7 +49,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <CartProvider>{children}</CartProvider>
             <Toaster />
           </ThemeProvider>
         </QueryProvider>
