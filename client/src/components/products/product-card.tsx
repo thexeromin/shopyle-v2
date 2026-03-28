@@ -3,22 +3,18 @@ import { ShoppingBag } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
-
-interface Product {
-  id: string
-  name: string
-  price: number
-  category: string
-  image: string
-}
+import type { Product } from '@/types/product'
 
 export function ProductCard({ product }: { product: Product }) {
+  const categoryName =
+    typeof product.category === 'object' ? product.category.name : 'General'
+
   return (
     <Card className="group flex h-full flex-col overflow-hidden transition-all hover:shadow-md">
-      {/* aspect-[4/3] creates a perfect standard rectangle */}
-      <CardContent className="relative aspect-[4/3] p-0 overflow-hidden bg-muted">
+      {/* aspect-4/3 creates a perfect standard rectangle */}
+      <CardContent className="relative aspect-4/3 p-0 overflow-hidden bg-muted">
         <Image
-          src={product.image}
+          src={product.photo}
           alt={product.name}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -30,7 +26,7 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="flex w-full items-start justify-between gap-4">
           <div className="flex flex-col gap-1.5">
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {product.category}
+              {categoryName}
             </p>
 
             <h3 className="font-semibold leading-tight tracking-tight hover:text-primary transition-colors line-clamp-2">
